@@ -35,11 +35,11 @@ jobs:
           python3 - <<'PYCODE'
           import os, base64, hashlib, pathlib, subprocess
           path = pathlib.Path('app/src/main/java/com/rfsentinel/app/esp/SerialPort.kt')
-          assert hashlib.sha256(path.read_bytes()).hexdigest() == 'a16d56637aac3c48b4229f09791503b679fc764fded62a71582883cdfbb9e309', 'Unexpected upstream source'
+          assert hashlib.sha256(path.read_bytes()).hexdigest() == '9570e343b13797e0f17d5ebff87f4c9bb0decce42d11cfe7c47a474cb41d0ed7', 'Unexpected upstream source'
           pathlib.Path('/tmp/c5.patch').write_bytes(base64.b64decode(os.environ['PATCH_B64']))
           subprocess.run(['git','apply','--check','/tmp/c5.patch'],check=True)
           subprocess.run(['git','apply','/tmp/c5.patch'],check=True)
-          assert hashlib.sha256(path.read_bytes()).hexdigest() == '48cba6fd8973b7259d107f129b3859af7296fb82496b310c5688975ef11ffb23'
+          assert hashlib.sha256(path.read_bytes()).hexdigest() == '7ac9aafe891a27f46b2576b1e52adc9039137205312e4aa00759e37a8bb5a597'
           test = pathlib.Path('app/src/test/java/com/rfsentinel/app/esp/SerialPortChipTest.kt')
           test.write_bytes(base64.b64decode(os.environ['TEST_B64']))
           label = pathlib.Path('app/src/debug/res/values/c5_test_label.xml')
