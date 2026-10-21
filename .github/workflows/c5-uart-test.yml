@@ -1,0 +1,68 @@
+name: Build C5 UART test APK
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - '.github/workflows/c5-uart-test.yml'
+permissions:
+  contents: read
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - name: Get verified RF Sentinel 2.26.0 source
+        uses: actions/checkout@v4
+        with:
+          repository: CIS-C0/RFSentinel
+          ref: b820fac8849a598e8551f2e8f7d514e240dfcc85
+          persist-credentials: false
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+      - uses: android-actions/setup-android@v3
+      - name: Install Android platform
+        run: sdkmanager "platforms;android-37" "build-tools;37.0.0"
+      - name: Apply verified CH343 CDC fix
+        env:
+          PATCH_B64: LS0tIGEvYXBwL3NyYy9tYWluL2phdmEvY29tL3Jmc2VudGluZWwvYXBwL2VzcC9TZXJpYWxQb3J0Lmt0CisrKyBiL2FwcC9zcmMvbWFpbi9qYXZhL2NvbS9yZnNlbnRpbmVsL2FwcC9lc3AvU2VyaWFsUG9ydC5rdApAQCAtMTQsMTIgKzE0LDEzIEBACiAgICAgZnVuIGNsb3NlKCkKIAogICAgIC8qKiBUaGUgVVNCLXNlcmlhbCBjaGlwcyBmb3VuZCBvbiBFU1AzMiBib2FyZHM7IEZSRUVXSUxJIGlzIHRoZSBGUkVFLVdpTGkgMidzIGNvbnNvbGUgKENEQy1BQ00pLiAqLwotICAgIGVudW0gY2xhc3MgQ2hpcCB7IE5BVElWRV9VU0IsIENQMjEwWCwgQ0gzNFgsIEZSRUVXSUxJIH0KKyAgICBlbnVtIGNsYXNzIENoaXAgeyBOQVRJVkVfVVNCLCBDUDIxMFgsIENIMzRYLCBGUkVFV0lMSSwgQ0RDX1VBUlQgfQogCiAgICAgY29tcGFuaW9uIG9iamVjdCB7CiAgICAgICAgIGZ1biBjaGlwT2YodmlkOiBJbnQsIHBpZDogSW50KTogQ2hpcD8gPSB3aGVuIHsKICAgICAgICAgICAgIHZpZCA9PSAweDMwM0EgLT4gQ2hpcC5OQVRJVkVfVVNCICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgLy8gRXNwcmVzc2lmIG5hdGl2ZSBVU0IgKFMyLCBTMywgQzMsIEM1LCBDNi4uLikKICAgICAgICAgICAgIHZpZCA9PSAweDA0ODMgJiYgcGlkID09IDB4NTc0MCAtPiBDaGlwLk5BVElWRV9VU0IgICAgICAgICAgICAgICAgICAgLy8gRmxpcHBlciBaZXJvIChVU0ItVUFSVCBicmlkZ2UgdG8gaXRzIEVTUDMyIGJvYXJkKQorICAgICAgICAgICAgdmlkID09IDB4MUE4NiAmJiBwaWQgPT0gMHg1NUQzIC0+IENoaXAuQ0RDX1VBUlQgLy8gV2F2ZXNoYXJlIENIMzQzIENEQy1BQ00gVUFSVCBicmlkZ2UKICAgICAgICAgICAgIHZpZCA9PSAweDEwQzQgJiYgcGlkID09IDB4RUE2MCAtPiBDaGlwLkNQMjEwWCAgICAgICAgICAgICAgICAgICAgICAgLy8gU2lsaWNvbiBMYWJzIENQMjEwMiAvIENQMjEwNAogICAgICAgICAgICAgdmlkID09IDB4MUE4NiAmJiBwaWQgaW4gc2V0T2YoMHg3NTIzLCAweDU1MjMsIDB4NTVENCkgLT4gQ2hpcC5DSDM0WCAvLyBXQ0ggQ0gzNDAgLyBDSDM0MSAvIENIOTEwMgogICAgICAgICAgICAgdmlkID09IDB4MDkzQyAmJiBwaWQgPT0gMHgyMDVBIC0+IENoaXAuRlJFRVdJTEkgICAgICAgICAgICAgICAgICAgICAvLyBGUkVFLVdpTGkgMiBjb25zb2xlIChpdHMgRVNQMzItQzUgZG9lcyBXaUZpKQpAQCAtMzEsNiArMzIsNyBAQAogICAgICAgICAgICAgd2hlbiAoY2hpcE9mKGRldmljZS52ZW5kb3JJZCwgZGV2aWNlLnByb2R1Y3RJZCkpIHsKICAgICAgICAgICAgICAgICBDaGlwLk5BVElWRV9VU0IgLT4gQ2RjQWNtUG9ydChjb25uLCBkZXZpY2UpLnRha2VJZiB7IGl0Lm9wZW4oKSB9CiAgICAgICAgICAgICAgICAgQ2hpcC5GUkVFV0lMSSAtPiBDZGNBY21Qb3J0KGNvbm4sIGRldmljZSwgcmFpc2VEdHIgPSBmYWxzZSkudGFrZUlmIHsgaXQub3BlbigpIH0KKyAgICAgICAgICAgICAgICBDaGlwLkNEQ19VQVJUIC0+IENkY0FjbVBvcnQoY29ubiwgZGV2aWNlLCByYWlzZUR0ciA9IGZhbHNlKS50YWtlSWYgeyBpdC5vcGVuKCkgfQogICAgICAgICAgICAgICAgIENoaXAuQ1AyMTBYIC0+IENwMjEweFBvcnQoY29ubiwgZGV2aWNlKS50YWtlSWYgeyBpdC5vcGVuKCkgfQogICAgICAgICAgICAgICAgIENoaXAuQ0gzNFggLT4gQ2gzNHhQb3J0KGNvbm4sIGRldmljZSkudGFrZUlmIHsgaXQub3BlbigpIH0KICAgICAgICAgICAgICAgICBudWxsIC0+IG51bGwK
+          TEST_B64: cGFja2FnZSBjb20ucmZzZW50aW5lbC5hcHAuZXNwCgppbXBvcnQgb3JnLmp1bml0LkFzc2VydC5hc3NlcnRFcXVhbHMKaW1wb3J0IG9yZy5qdW5pdC5Bc3NlcnQuYXNzZXJ0TnVsbAppbXBvcnQgb3JnLmp1bml0LlRlc3QKCmNsYXNzIFNlcmlhbFBvcnRDaGlwVGVzdCB7CiAgICBAVGVzdCBmdW4gd2F2ZXNoYXJlQnJpZGdlSXNSZWNvZ25pc2VkQXNDZGNVYXJ0KCkgewogICAgICAgIGFzc2VydEVxdWFscyhTZXJpYWxQb3J0LkNoaXAuQ0RDX1VBUlQsIFNlcmlhbFBvcnQuY2hpcE9mKDB4MUE4NiwgMHg1NUQzKSkKICAgIH0KICAgIEBUZXN0IGZ1biBleGlzdGluZ0JyaWRnZXNLZWVwVGhlaXJEcml2ZXJzKCkgewogICAgICAgIGFzc2VydEVxdWFscyhTZXJpYWxQb3J0LkNoaXAuTkFUSVZFX1VTQiwgU2VyaWFsUG9ydC5jaGlwT2YoMHgzMDNBLCAweDEwMDEpKQogICAgICAgIGFzc2VydEVxdWFscyhTZXJpYWxQb3J0LkNoaXAuTkFUSVZFX1VTQiwgU2VyaWFsUG9ydC5jaGlwT2YoMHgwNDgzLCAweDU3NDApKQogICAgICAgIGFzc2VydEVxdWFscyhTZXJpYWxQb3J0LkNoaXAuQ1AyMTBYLCBTZXJpYWxQb3J0LmNoaXBPZigweDEwQzQsIDB4RUE2MCkpCiAgICAgICAgZm9yIChwaWQgaW4gbGlzdE9mKDB4NzUyMywgMHg1NTIzLCAweDU1RDQpKSB7CiAgICAgICAgICAgIGFzc2VydEVxdWFscyhTZXJpYWxQb3J0LkNoaXAuQ0gzNFgsIFNlcmlhbFBvcnQuY2hpcE9mKDB4MUE4NiwgcGlkKSkKICAgICAgICB9CiAgICAgICAgYXNzZXJ0RXF1YWxzKFNlcmlhbFBvcnQuQ2hpcC5GUkVFV0lMSSwgU2VyaWFsUG9ydC5jaGlwT2YoMHgwOTNDLCAweDIwNUEpKQogICAgfQogICAgQFRlc3QgZnVuIHVua25vd25EZXZpY2VzQXJlTm90Q2xhaW1lZCgpIHsKICAgICAgICBhc3NlcnROdWxsKFNlcmlhbFBvcnQuY2hpcE9mKDB4MUE4NiwgMHhGRkZGKSkKICAgICAgICBhc3NlcnROdWxsKFNlcmlhbFBvcnQuY2hpcE9mKDB4RkZGRiwgMHg1NUQzKSkKICAgICAgICBhc3NlcnROdWxsKFNlcmlhbFBvcnQuY2hpcE9mKDB4MEJEQSwgMHgyODM4KSkgLy8gUlRMLVNEUiByZW1haW5zIHNlcGFyYXRlCiAgICB9Cn0K
+        run: |
+          python3 - <<'PYCODE'
+          import os, base64, hashlib, pathlib, subprocess
+          path = pathlib.Path('app/src/main/java/com/rfsentinel/app/esp/SerialPort.kt')
+          assert hashlib.sha256(path.read_bytes()).hexdigest() == 'a16d56637aac3c48b4229f09791503b679fc764fded62a71582883cdfbb9e309', 'Unexpected upstream source'
+          pathlib.Path('/tmp/c5.patch').write_bytes(base64.b64decode(os.environ['PATCH_B64']))
+          subprocess.run(['git','apply','--check','/tmp/c5.patch'],check=True)
+          subprocess.run(['git','apply','/tmp/c5.patch'],check=True)
+          assert hashlib.sha256(path.read_bytes()).hexdigest() == '48cba6fd8973b7259d107f129b3859af7296fb82496b310c5688975ef11ffb23'
+          test = pathlib.Path('app/src/test/java/com/rfsentinel/app/esp/SerialPortChipTest.kt')
+          test.write_bytes(base64.b64decode(os.environ['TEST_B64']))
+          label = pathlib.Path('app/src/debug/res/values/c5_test_label.xml')
+          label.parent.mkdir(parents=True, exist_ok=True)
+          label.write_text('<resources><string name="app_name">RF Sentinel C5 Test</string></resources>')
+          PYCODE
+      - name: Test serial detection and Marauder reader; build separate debug app
+        run: |
+          chmod +x gradlew
+          ./gradlew --no-daemon --max-workers=2 :app:testDebugUnitTest --tests 'com.rfsentinel.app.esp.SerialPortChipTest' --tests 'com.rfsentinel.app.esp.EspReaderTest' :app:assembleDebug
+      - name: Upload test APK and relevant sources
+        uses: actions/upload-artifact@v4
+        with:
+          name: RFSentinel-C5-UART-Test
+          if-no-files-found: error
+          retention-days: 14
+          path: |
+            app/build/outputs/apk/debug/*.apk
+            app/src/main/java/com/rfsentinel/app/esp/SerialPort.kt
+            app/src/test/java/com/rfsentinel/app/esp/SerialPortChipTest.kt
+            LICENSE
+      - name: Upload test reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: C5-UART-test-reports
+          if-no-files-found: ignore
+          retention-days: 14
+          path: app/build/reports/tests/
