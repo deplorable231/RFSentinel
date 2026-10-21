@@ -49,7 +49,7 @@ jobs:
       - name: Test serial detection and Marauder reader; build separate debug app
         run: |
           chmod +x gradlew
-          ./gradlew --no-daemon --max-workers=2 :app:testDebugUnitTest --tests 'com.rfsentinel.app.esp.SerialPortChipTest' --tests 'com.rfsentinel.app.esp.EspReaderTest' :app:assembleDebug
+          ./gradlew --no-daemon --max-workers=2 :app:testFullDebugUnitTest --tests 'com.rfsentinel.app.esp.SerialPortChipTest' --tests 'com.rfsentinel.app.esp.EspReaderTest' :app:assembleFullDebug
       - name: Upload test APK and relevant sources
         uses: actions/upload-artifact@v4
         with:
@@ -57,7 +57,7 @@ jobs:
           if-no-files-found: error
           retention-days: 14
           path: |
-            app/build/outputs/apk/debug/*.apk
+            app/build/outputs/apk/full/debug/*.apk
             app/src/main/java/com/rfsentinel/app/esp/SerialPort.kt
             app/src/test/java/com/rfsentinel/app/esp/SerialPortChipTest.kt
             LICENSE
